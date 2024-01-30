@@ -24,7 +24,19 @@ var (
 )
 
 const (
-// this line is used by starport scaffolding # simapp/module/const
+	opWeightMsgCreateLotteryItem = "op_weight_msg_lottery_item"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgCreateLotteryItem int = 100
+
+	opWeightMsgUpdateLotteryItem = "op_weight_msg_lottery_item"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgUpdateLotteryItem int = 100
+
+	opWeightMsgDeleteLotteryItem = "op_weight_msg_lottery_item"
+	// TODO: Determine the simulation weight value
+	defaultWeightMsgDeleteLotteryItem int = 100
+
+	// this line is used by starport scaffolding # simapp/module/const
 )
 
 // GenerateGenesisState creates a randomized GenState of the module
@@ -57,6 +69,39 @@ func (am AppModule) RegisterStoreDecoder(_ sdk.StoreDecoderRegistry) {}
 // WeightedOperations returns the all the gov module operations with their respective weights.
 func (am AppModule) WeightedOperations(simState module.SimulationState) []simtypes.WeightedOperation {
 	operations := make([]simtypes.WeightedOperation, 0)
+
+	var weightMsgCreateLotteryItem int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgCreateLotteryItem, &weightMsgCreateLotteryItem, nil,
+		func(_ *rand.Rand) {
+			weightMsgCreateLotteryItem = defaultWeightMsgCreateLotteryItem
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgCreateLotteryItem,
+		lotterysimulation.SimulateMsgCreateLotteryItem(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgUpdateLotteryItem int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgUpdateLotteryItem, &weightMsgUpdateLotteryItem, nil,
+		func(_ *rand.Rand) {
+			weightMsgUpdateLotteryItem = defaultWeightMsgUpdateLotteryItem
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgUpdateLotteryItem,
+		lotterysimulation.SimulateMsgUpdateLotteryItem(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
+
+	var weightMsgDeleteLotteryItem int
+	simState.AppParams.GetOrGenerate(simState.Cdc, opWeightMsgDeleteLotteryItem, &weightMsgDeleteLotteryItem, nil,
+		func(_ *rand.Rand) {
+			weightMsgDeleteLotteryItem = defaultWeightMsgDeleteLotteryItem
+		},
+	)
+	operations = append(operations, simulation.NewWeightedOperation(
+		weightMsgDeleteLotteryItem,
+		lotterysimulation.SimulateMsgDeleteLotteryItem(am.accountKeeper, am.bankKeeper, am.keeper),
+	))
 
 	// this line is used by starport scaffolding # simapp/module/operation
 

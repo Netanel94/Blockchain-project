@@ -1,0 +1,10 @@
+syntax = "proto3";
+package lottery.lottery;
+
+option go_package = "lottery/x/lottery/types";
+
+message LotteryItem {
+  int32 amount = 1; 
+  repeated string participants = 2; 
+  string creator = 3;
+}

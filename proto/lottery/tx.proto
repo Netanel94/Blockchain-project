@@ -1,13 +1,35 @@
 syntax = "proto3";
 package lottery.lottery;
 
+import "lottery/lottery_item.proto";
 // this line is used by starport scaffolding # proto/tx/import
 
 option go_package = "lottery/x/lottery/types";
 
 // Msg defines the Msg service.
 service Msg {
-    // this line is used by starport scaffolding # proto/tx/rpc
+      rpc CreateLotteryItem(MsgCreateLotteryItem) returns (MsgCreateLotteryItemResponse);
+  rpc UpdateLotteryItem(MsgUpdateLotteryItem) returns (MsgUpdateLotteryItemResponse);
+  rpc DeleteLotteryItem(MsgDeleteLotteryItem) returns (MsgDeleteLotteryItemResponse);
+// this line is used by starport scaffolding # proto/tx/rpc
 }
 
+message MsgCreateLotteryItem {
+  string creator = 1;
+  int32 amount = 3;
+  repeated string participants = 4;
+}
+message MsgCreateLotteryItemResponse {}
+
+message MsgUpdateLotteryItem {
+  string creator = 1;
+  int32 amount = 3;
+  repeated string participants = 4;
+}
+message MsgUpdateLotteryItemResponse {}
+
+message MsgDeleteLotteryItem {
+  string creator = 1;
+}
+message MsgDeleteLotteryItemResponse {}
 // this line is used by starport scaffolding # proto/tx/message

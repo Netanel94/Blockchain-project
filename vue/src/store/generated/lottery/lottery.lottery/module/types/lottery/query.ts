@@ -1,6 +1,7 @@
 /* eslint-disable */
 import { Reader, Writer } from "protobufjs/minimal";
 import { Params } from "../lottery/params";
+import { LotteryItem } from "../lottery/lottery_item";
 
 export const protobufPackage = "lottery.lottery";
 
@@ -11,6 +12,12 @@ export interface QueryParamsRequest {}
 export interface QueryParamsResponse {
   /** params holds all the parameters of this module. */
   params: Params | undefined;
+}
+
+export interface QueryGetLotteryItemRequest {}
+
+export interface QueryGetLotteryItemResponse {
+  LotteryItem: LotteryItem | undefined;
 }
 
 const baseQueryParamsRequest: object = {};
@@ -110,10 +117,141 @@ export const QueryParamsResponse = {
   },
 };
 
+const baseQueryGetLotteryItemRequest: object = {};
+
+export const QueryGetLotteryItemRequest = {
+  encode(
+    _: QueryGetLotteryItemRequest,
+    writer: Writer = Writer.create()
+  ): Writer {
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryGetLotteryItemRequest {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetLotteryItemRequest,
+    } as QueryGetLotteryItemRequest;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(_: any): QueryGetLotteryItemRequest {
+    const message = {
+      ...baseQueryGetLotteryItemRequest,
+    } as QueryGetLotteryItemRequest;
+    return message;
+  },
+
+  toJSON(_: QueryGetLotteryItemRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  fromPartial(
+    _: DeepPartial<QueryGetLotteryItemRequest>
+  ): QueryGetLotteryItemRequest {
+    const message = {
+      ...baseQueryGetLotteryItemRequest,
+    } as QueryGetLotteryItemRequest;
+    return message;
+  },
+};
+
+const baseQueryGetLotteryItemResponse: object = {};
+
+export const QueryGetLotteryItemResponse = {
+  encode(
+    message: QueryGetLotteryItemResponse,
+    writer: Writer = Writer.create()
+  ): Writer {
+    if (message.LotteryItem !== undefined) {
+      LotteryItem.encode(
+        message.LotteryItem,
+        writer.uint32(10).fork()
+      ).ldelim();
+    }
+    return writer;
+  },
+
+  decode(
+    input: Reader | Uint8Array,
+    length?: number
+  ): QueryGetLotteryItemResponse {
+    const reader = input instanceof Uint8Array ? new Reader(input) : input;
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = {
+      ...baseQueryGetLotteryItemResponse,
+    } as QueryGetLotteryItemResponse;
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1:
+          message.LotteryItem = LotteryItem.decode(reader, reader.uint32());
+          break;
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  },
+
+  fromJSON(object: any): QueryGetLotteryItemResponse {
+    const message = {
+      ...baseQueryGetLotteryItemResponse,
+    } as QueryGetLotteryItemResponse;
+    if (object.LotteryItem !== undefined && object.LotteryItem !== null) {
+      message.LotteryItem = LotteryItem.fromJSON(object.LotteryItem);
+    } else {
+      message.LotteryItem = undefined;
+    }
+    return message;
+  },
+
+  toJSON(message: QueryGetLotteryItemResponse): unknown {
+    const obj: any = {};
+    message.LotteryItem !== undefined &&
+      (obj.LotteryItem = message.LotteryItem
+        ? LotteryItem.toJSON(message.LotteryItem)
+        : undefined);
+    return obj;
+  },
+
+  fromPartial(
+    object: DeepPartial<QueryGetLotteryItemResponse>
+  ): QueryGetLotteryItemResponse {
+    const message = {
+      ...baseQueryGetLotteryItemResponse,
+    } as QueryGetLotteryItemResponse;
+    if (object.LotteryItem !== undefined && object.LotteryItem !== null) {
+      message.LotteryItem = LotteryItem.fromPartial(object.LotteryItem);
+    } else {
+      message.LotteryItem = undefined;
+    }
+    return message;
+  },
+};
+
 /** Query defines the gRPC querier service. */
 export interface Query {
   /** Parameters queries the parameters of the module. */
   Params(request: QueryParamsRequest): Promise<QueryParamsResponse>;
+  /** Queries a LotteryItem by index. */
+  LotteryItem(
+    request: QueryGetLotteryItemRequest
+  ): Promise<QueryGetLotteryItemResponse>;
 }
 
 export class QueryClientImpl implements Query {
@@ -125,6 +263,20 @@ export class QueryClientImpl implements Query {
     const data = QueryParamsRequest.encode(request).finish();
     const promise = this.rpc.request("lottery.lottery.Query", "Params", data);
     return promise.then((data) => QueryParamsResponse.decode(new Reader(data)));
+  }
+
+  LotteryItem(
+    request: QueryGetLotteryItemRequest
+  ): Promise<QueryGetLotteryItemResponse> {
+    const data = QueryGetLotteryItemRequest.encode(request).finish();
+    const promise = this.rpc.request(
+      "lottery.lottery.Query",
+      "LotteryItem",
+      data
+    );
+    return promise.then((data) =>
+      QueryGetLotteryItemResponse.decode(new Reader(data))
+    );
   }
 }
 

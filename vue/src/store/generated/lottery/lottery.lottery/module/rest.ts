@@ -9,12 +9,29 @@
  * ---------------------------------------------------------------
  */
 
+export type LotteryMsgCreateLotteryItemResponse = object;
+
+export type LotteryMsgDeleteLotteryItemResponse = object;
+
+export type LotteryMsgUpdateLotteryItemResponse = object;
+
+export interface LotteryQueryGetLotteryItemResponse {
+  LotteryItem?: LotterylotteryLotteryItem;
+}
+
 /**
  * QueryParamsResponse is response type for the Query/Params RPC method.
  */
 export interface LotteryQueryParamsResponse {
   /** params holds all the parameters of this module. */
   params?: LotterylotteryParams;
+}
+
+export interface LotterylotteryLotteryItem {
+  /** @format int32 */
+  amount?: number;
+  participants?: string[];
+  creator?: string;
 }
 
 /**
@@ -229,6 +246,22 @@ export class HttpClient<SecurityDataType = unknown> {
  * @version version not set
  */
 export class Api<SecurityDataType extends unknown> extends HttpClient<SecurityDataType> {
+  /**
+   * No description
+   *
+   * @tags Query
+   * @name QueryLotteryItem
+   * @summary Queries a LotteryItem by index.
+   * @request GET:/lottery/lottery/lottery_item
+   */
+  queryLotteryItem = (params: RequestParams = {}) =>
+    this.request<LotteryQueryGetLotteryItemResponse, RpcStatus>({
+      path: `/lottery/lottery/lottery_item`,
+      method: "GET",
+      format: "json",
+      ...params,
+    });
+
   /**
    * No description
    *

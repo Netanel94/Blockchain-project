@@ -4,9 +4,15 @@ import { StdFee } from "@cosmjs/launchpad";
 import { SigningStargateClient } from "@cosmjs/stargate";
 import { Registry, OfflineSigner, EncodeObject, DirectSecp256k1HdWallet } from "@cosmjs/proto-signing";
 import { Api } from "./rest";
+import { MsgCreateLotteryItem } from "./types/lottery/tx";
+import { MsgUpdateLotteryItem } from "./types/lottery/tx";
+import { MsgDeleteLotteryItem } from "./types/lottery/tx";
 
 
 const types = [
+  ["/lottery.lottery.MsgCreateLotteryItem", MsgCreateLotteryItem],
+  ["/lottery.lottery.MsgUpdateLotteryItem", MsgUpdateLotteryItem],
+  ["/lottery.lottery.MsgDeleteLotteryItem", MsgDeleteLotteryItem],
   
 ];
 export const MissingWalletError = new Error("wallet is required");
@@ -39,6 +45,9 @@ const txClient = async (wallet: OfflineSigner, { addr: addr }: TxClientOptions =
 
   return {
     signAndBroadcast: (msgs: EncodeObject[], { fee, memo }: SignAndBroadcastOptions = {fee: defaultFee, memo: ""}) => client.signAndBroadcast(address, msgs, fee,memo),
+    msgCreateLotteryItem: (data: MsgCreateLotteryItem): EncodeObject => ({ typeUrl: "/lottery.lottery.MsgCreateLotteryItem", value: MsgCreateLotteryItem.fromPartial( data ) }),
+    msgUpdateLotteryItem: (data: MsgUpdateLotteryItem): EncodeObject => ({ typeUrl: "/lottery.lottery.MsgUpdateLotteryItem", value: MsgUpdateLotteryItem.fromPartial( data ) }),
+    msgDeleteLotteryItem: (data: MsgDeleteLotteryItem): EncodeObject => ({ typeUrl: "/lottery.lottery.MsgDeleteLotteryItem", value: MsgDeleteLotteryItem.fromPartial( data ) }),
     
   };
 };
